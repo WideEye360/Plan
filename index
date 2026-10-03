@@ -1,0 +1,844 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>360 Business — 30 Day Sprint</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, Arial, sans-serif;
+      background: #f5f5f5;
+      color: #171717;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 30px 20px 60px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 32px;
+    }
+
+    .subtitle {
+      color: #666;
+      margin: 0;
+    }
+
+    .date {
+      color: #666;
+      font-size: 14px;
+      text-align: right;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 14px;
+      padding: 20px;
+      border: 1px solid #e5e5e5;
+    }
+
+    .metric-label {
+      color: #777;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .metric-value {
+      font-size: 30px;
+      font-weight: 700;
+    }
+
+    .target {
+      color: #888;
+      font-size: 13px;
+      margin-top: 5px;
+    }
+
+    .progress {
+      height: 8px;
+      background: #e8e8e8;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 14px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: #171717;
+      transition: width 0.3s ease;
+    }
+
+    .section {
+      background: white;
+      border: 1px solid #e5e5e5;
+      border-radius: 14px;
+      padding: 22px;
+      margin-bottom: 20px;
+    }
+
+    .section h2 {
+      margin-top: 0;
+      font-size: 20px;
+    }
+
+    .daily-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 12px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      color: #555;
+      margin-bottom: 6px;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #d5d5d5;
+      border-radius: 8px;
+      font-size: 14px;
+      background: white;
+    }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .field {
+      margin-bottom: 15px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 8px;
+      padding: 11px 16px;
+      background: #171717;
+      color: white;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    button:hover {
+      opacity: 0.85;
+    }
+
+    button.secondary {
+      background: #eee;
+      color: #171717;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 750px;
+    }
+
+    th, td {
+      padding: 12px 10px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+      font-size: 14px;
+    }
+
+    th {
+      color: #666;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .status {
+      padding: 5px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      background: #eee;
+      display: inline-block;
+    }
+
+    .status.hot {
+      background: #ddd;
+      font-weight: 600;
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .two-columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .goal-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .goal {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 13px;
+      background: #f7f7f7;
+      border-radius: 8px;
+    }
+
+    .goal strong {
+      font-size: 15px;
+    }
+
+    .small {
+      font-size: 12px;
+      color: #777;
+    }
+
+    @media (max-width: 900px) {
+      .grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .daily-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .two-columns {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 550px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .daily-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      header {
+        flex-direction: column;
+      }
+
+      .date {
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <header>
+    <div>
+      <h1>360 Business — 30 Day Sprint</h1>
+      <p class="subtitle">
+        Goal: prove the business and reach €500/month.
+      </p>
+    </div>
+
+    <div class="date">
+      <strong>30-Day Sprint</strong><br>
+      Started: <span id="startDate"></span>
+    </div>
+  </header>
+
+
+  <!-- MAIN METRICS -->
+  <div class="grid">
+
+    <div class="card">
+      <div class="metric-label">Revenue</div>
+      <div class="metric-value">€<span id="revenue">0</span></div>
+      <div class="target">Target: €500</div>
+      <div class="progress">
+        <div class="progress-bar" id="revenueProgress"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="metric-label">Paying customers</div>
+      <div class="metric-value" id="customers">0</div>
+      <div class="target">Target: 5</div>
+      <div class="progress">
+        <div class="progress-bar" id="customerProgress"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="metric-label">Prospects contacted</div>
+      <div class="metric-value" id="prospects">0</div>
+      <div class="target">Target: 140</div>
+      <div class="progress">
+        <div class="progress-bar" id="prospectProgress"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="metric-label">Testimonials</div>
+      <div class="metric-value" id="testimonials">0</div>
+      <div class="target">Target: 3</div>
+      <div class="progress">
+        <div class="progress-bar" id="testimonialProgress"></div>
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- DAILY ACTIVITY -->
+  <div class="section">
+
+    <h2>Today's activity</h2>
+
+    <div class="daily-grid">
+
+      <div>
+        <label>Prospects contacted</label>
+        <input type="number" id="dailyProspects" min="0" value="0">
+      </div>
+
+      <div>
+        <label>Messages sent</label>
+        <input type="number" id="dailyMessages" min="0" value="0">
+      </div>
+
+      <div>
+        <label>Calls</label>
+        <input type="number" id="dailyCalls" min="0" value="0">
+      </div>
+
+      <div>
+        <label>Meetings</label>
+        <input type="number" id="dailyMeetings" min="0" value="0">
+      </div>
+
+      <div>
+        <label>Sales</label>
+        <input type="number" id="dailySales" min="0" value="0">
+      </div>
+
+      <div>
+        <label>Revenue (€)</label>
+        <input type="number" id="dailyRevenue" min="0" value="0">
+      </div>
+
+    </div>
+
+    <br>
+
+    <button onclick="saveToday()">Save today's activity</button>
+
+  </div>
+
+
+  <!-- PIPELINE -->
+  <div class="section">
+
+    <h2>Prospect pipeline</h2>
+
+    <div class="actions" style="margin-bottom:20px;">
+      <button onclick="addProspect()">+ Add prospect</button>
+    </div>
+
+    <div class="table-wrapper">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>Agent / Company</th>
+            <th>Property</th>
+            <th>Contact</th>
+            <th>Status</th>
+            <th>Potential €</th>
+            <th>Notes</th>
+            <th></th>
+          </tr>
+        </thead>
+
+        <tbody id="prospectTable"></tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+
+  <!-- GOALS -->
+  <div class="two-columns">
+
+    <div class="section">
+
+      <h2>30-day goals</h2>
+
+      <div class="goal-list">
+
+        <div class="goal">
+          <strong>€500 revenue</strong>
+          <span id="goalRevenue">0%</span>
+        </div>
+
+        <div class="goal">
+          <strong>5 paying customers</strong>
+          <span id="goalCustomers">0%</span>
+        </div>
+
+        <div class="goal">
+          <strong>140 prospects contacted</strong>
+          <span id="goalProspects">0%</span>
+        </div>
+
+        <div class="goal">
+          <strong>3 testimonials</strong>
+          <span id="goalTestimonials">0%</span>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="section">
+
+      <h2>What am I learning?</h2>
+
+      <div class="field">
+        <label>What are customers actually buying?</label>
+        <textarea id="learningBuying"
+          placeholder="Example: Agents don't care about the technology. They care about making listings look premium."></textarea>
+      </div>
+
+      <div class="field">
+        <label>What objections am I hearing?</label>
+        <textarea id="learningObjections"
+          placeholder="Example: 'I already have professional photos.'"></textarea>
+      </div>
+
+      <div class="field">
+        <label>What should I change?</label>
+        <textarea id="learningChanges"
+          placeholder="Offer, price, niche, sales message, process..."></textarea>
+      </div>
+
+      <button onclick="saveLearning()">Save notes</button>
+
+    </div>
+
+  </div>
+
+
+  <!-- RESET -->
+  <div class="section">
+
+    <h2>Data</h2>
+
+    <p class="small">
+      Your data is stored locally in this browser. Nothing is uploaded to a server.
+    </p>
+
+    <button class="secondary" onclick="exportData()">
+      Export data
+    </button>
+
+    <button class="secondary" onclick="resetData()">
+      Reset everything
+    </button>
+
+  </div>
+
+</div>
+
+
+<script>
+
+  const STORAGE_KEY = "360BusinessSprint";
+
+  let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
+    startDate: new Date().toISOString().split("T")[0],
+    days: [],
+    prospects: [],
+    learning: {
+      buying: "",
+      objections: "",
+      changes: ""
+    }
+  };
+
+
+  // -----------------------------
+  // INITIALIZATION
+  // -----------------------------
+
+  document.getElementById("startDate").textContent = data.startDate;
+
+  loadLearning();
+  renderProspects();
+  updateDashboard();
+
+
+  // -----------------------------
+  // DAILY ACTIVITY
+  // -----------------------------
+
+  function saveToday() {
+
+    const today = new Date().toISOString().split("T")[0];
+
+    const entry = {
+      date: today,
+      prospects: Number(document.getElementById("dailyProspects").value),
+      messages: Number(document.getElementById("dailyMessages").value),
+      calls: Number(document.getElementById("dailyCalls").value),
+      meetings: Number(document.getElementById("dailyMeetings").value),
+      sales: Number(document.getElementById("dailySales").value),
+      revenue: Number(document.getElementById("dailyRevenue").value)
+    };
+
+    const existing = data.days.findIndex(d => d.date === today);
+
+    if (existing >= 0) {
+      data.days[existing] = entry;
+    } else {
+      data.days.push(entry);
+    }
+
+    save();
+    updateDashboard();
+
+    alert("Today's activity saved.");
+  }
+
+
+  // -----------------------------
+  // DASHBOARD CALCULATIONS
+  // -----------------------------
+
+  function updateDashboard() {
+
+    const revenue = data.days.reduce((sum, d) => sum + d.revenue, 0);
+    const prospects = data.days.reduce((sum, d) => sum + d.prospects, 0);
+    const customers = data.days.reduce((sum, d) => sum + d.sales, 0);
+
+    const testimonials = data.prospects.filter(
+      p => p.testimonial === "Yes"
+    ).length;
+
+    document.getElementById("revenue").textContent = revenue.toFixed(0);
+    document.getElementById("customers").textContent = customers;
+    document.getElementById("prospects").textContent = prospects;
+    document.getElementById("testimonials").textContent = testimonials;
+
+
+    setProgress("revenueProgress", revenue, 500);
+    setProgress("customerProgress", customers, 5);
+    setProgress("prospectProgress", prospects, 140);
+    setProgress("testimonialProgress", testimonials, 3);
+
+
+    document.getElementById("goalRevenue").textContent =
+      percentage(revenue, 500) + "%";
+
+    document.getElementById("goalCustomers").textContent =
+      percentage(customers, 5) + "%";
+
+    document.getElementById("goalProspects").textContent =
+      percentage(prospects, 140) + "%";
+
+    document.getElementById("goalTestimonials").textContent =
+      percentage(testimonials, 3) + "%";
+  }
+
+
+  function percentage(value, target) {
+    return Math.min(100, Math.round((value / target) * 100));
+  }
+
+
+  function setProgress(id, value, target) {
+    document.getElementById(id).style.width =
+      percentage(value, target) + "%";
+  }
+
+
+  // -----------------------------
+  // PROSPECT PIPELINE
+  // -----------------------------
+
+  function addProspect() {
+
+    const prospect = {
+      id: Date.now(),
+      company: "",
+      property: "",
+      contact: "",
+      status: "New",
+      potential: 69,
+      notes: "",
+      testimonial: "No"
+    };
+
+    data.prospects.push(prospect);
+
+    save();
+    renderProspects();
+  }
+
+
+  function updateProspect(id, field, value) {
+
+    const prospect = data.prospects.find(p => p.id === id);
+
+    if (!prospect) return;
+
+    prospect[field] = value;
+
+    save();
+    updateDashboard();
+  }
+
+
+  function deleteProspect(id) {
+
+    data.prospects =
+      data.prospects.filter(p => p.id !== id);
+
+    save();
+    renderProspects();
+    updateDashboard();
+  }
+
+
+  function renderProspects() {
+
+    const table = document.getElementById("prospectTable");
+
+    table.innerHTML = "";
+
+    data.prospects.forEach(p => {
+
+      const row = document.createElement("tr");
+
+      row.innerHTML = `
+
+        <td>
+          <input
+            value="${escapeHTML(p.company)}"
+            placeholder="Agency / agent"
+            onchange="updateProspect(${p.id}, 'company', this.value)"
+          >
+        </td>
+
+        <td>
+          <input
+            value="${escapeHTML(p.property)}"
+            placeholder="Property"
+            onchange="updateProspect(${p.id}, 'property', this.value)"
+          >
+        </td>
+
+        <td>
+          <input
+            value="${escapeHTML(p.contact)}"
+            placeholder="Phone / email"
+            onchange="updateProspect(${p.id}, 'contact', this.value)"
+          >
+        </td>
+
+        <td>
+          <select onchange="updateProspect(${p.id}, 'status', this.value)">
+            ${statusOption("New", p.status)}
+            ${statusOption("Contacted", p.status)}
+            ${statusOption("Replied", p.status)}
+            ${statusOption("Meeting", p.status)}
+            ${statusOption("Won", p.status)}
+            ${statusOption("Lost", p.status)}
+          </select>
+        </td>
+
+        <td>
+          <input
+            type="number"
+            value="${p.potential}"
+            onchange="updateProspect(${p.id}, 'potential', Number(this.value))"
+          >
+        </td>
+
+        <td>
+          <input
+            value="${escapeHTML(p.notes)}"
+            placeholder="Notes"
+            onchange="updateProspect(${p.id}, 'notes', this.value)"
+          >
+        </td>
+
+        <td>
+          <button class="secondary"
+            onclick="deleteProspect(${p.id})">
+            ×
+          </button>
+        </td>
+      `;
+
+      table.appendChild(row);
+    });
+  }
+
+
+  function statusOption(value, current) {
+    return `
+      <option value="${value}"
+        ${value === current ? "selected" : ""}>
+        ${value}
+      </option>
+    `;
+  }
+
+
+  // -----------------------------
+  // LEARNING NOTES
+  // -----------------------------
+
+  function saveLearning() {
+
+    data.learning.buying =
+      document.getElementById("learningBuying").value;
+
+    data.learning.objections =
+      document.getElementById("learningObjections").value;
+
+    data.learning.changes =
+      document.getElementById("learningChanges").value;
+
+    save();
+
+    alert("Notes saved.");
+  }
+
+
+  function loadLearning() {
+
+    document.getElementById("learningBuying").value =
+      data.learning.buying || "";
+
+    document.getElementById("learningObjections").value =
+      data.learning.objections || "";
+
+    document.getElementById("learningChanges").value =
+      data.learning.changes || "";
+  }
+
+
+  // -----------------------------
+  // STORAGE
+  // -----------------------------
+
+  function save() {
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(data)
+    );
+  }
+
+
+  // -----------------------------
+  // EXPORT
+  // -----------------------------
+
+  function exportData() {
+
+    const blob = new Blob(
+      [JSON.stringify(data, null, 2)],
+      { type: "application/json" }
+    );
+
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+
+    a.href = url;
+    a.download = "360-business-sprint.json";
+
+    a.click();
+
+    URL.revokeObjectURL(url);
+  }
+
+
+  // -----------------------------
+  // RESET
+  // -----------------------------
+
+  function resetData() {
+
+    const confirmed =
+      confirm(
+        "Are you sure? This will delete all sprint data."
+      );
+
+    if (!confirmed) return;
+
+    localStorage.removeItem(STORAGE_KEY);
+
+    location.reload();
+  }
+
+
+  // -----------------------------
+  // SECURITY / HTML ESCAPING
+  // -----------------------------
+
+  function escapeHTML(value) {
+
+    return String(value || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+</script>
+
+</body>
+</html>
+```
