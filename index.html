@@ -492,7 +492,70 @@
 
   const STORAGE_KEY = "360BusinessSprint";
 
-  let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
+
+  // --------------------------------------------------
+  // INITIAL PROSPECTS
+  // --------------------------------------------------
+
+  const initialProspects = [
+
+    ["Денка Камова-Асова", "Portal 65 Estate", "0886 667 668"],
+    ["Ана Сеферова", "Urban Estate", "0888 261 586"],
+    ["Даниела Тодорова", "Арк Естейт", "0888 434 751"],
+    ["Таня Нойкова", "Тимекс 94", "0882 236 507"],
+    ["Цветелина Михайлова", "Estate Factory", "0883 774 844"],
+    ["Цветелина Спасова", "Arco Real Estate", "0876 278 104"],
+    ["Ирена Илиева", "Роял-М 67", "0878 774 274"],
+    ["Нели Вълчанова", "Arco Real Estate", "0877 442 706"],
+    ["Емилия Дамянова", "Емили Риъл Естейтс", "0876 491 121"],
+    ["Моника Манолова", "Темпо Естейт", "0893 625 152"],
+    ["Елена Николич", "The One", "0879 588 058"],
+    ["Пролетина Костова", "Бонония Имоти", "0899 886 262"],
+    ["Ралица Стоянова", "Платинум Естейтс", "0882 722 553"],
+    ["Диана Дачевска", "Архконсулт", "0887 891 936"],
+    ["Красимира Маркова", "Имоти Комфорт", "0888 291 561"],
+    ["Александр Доцев", "Millennium Estates", "0883 930 330"],
+
+    ["Антон Туджаров", "Arco Real Estate Офис Юг", "0877 275 408"],
+    ["Веселина Стоева", "Simar RE", "0885 885 655"],
+    ["Виктория Фенч", "Явлена", "0888 109 040"],
+    ["Валентин Цеков", "Next RE", "0886 942 158"],
+    ["Силвия Абдо", "RR Estate Agency", "0883 382 600"],
+    ["Геновева Филева", "Art House 94", "0887 803 064"],
+    ["Георги Милков", "Явлена Офис Лагера", "0889 262 606"],
+    ["Илиян Галчев", "Бонония Имоти", "0899 889 910"],
+    ["Найден Цветанов", "Leartista", "0877 887 457"],
+    ["Искра Бонева", "Bon Property", "0878 955 388"],
+    ["Ива Цекова", "Имоти Просперити", "0896 424 042"],
+    ["Димитър Цачев", "Вертекс Естейт", "0893 544 443"],
+    ["Владимир Касамаков", "Универси", "0885 441 447"],
+    ["Елеонора Папазова", "Noura Real Estate", "0878 385 594"],
+    ["Цветана Атанасова", "JTB Real Estate", "0878 697 228"],
+    ["Симона Григорова", "Явлена", "0882 230 300"],
+    ["Димитричка Давидкова", "MARTIN'S", "0882 415 431"],
+    ["Теодора Георгиева", "Revia Private Real Estate", "0884 009 915"],
+    ["Златина Трифонова", "JTB Real Estate", "0897 600 979"],
+    ["Полина Борисова", "Via Home", "0877 877 501"],
+    ["Даниела Кръстева", "Архконсулт", "0887 954 426"],
+    ["Михаела Кръстева", "Универси", "0893 833 877"],
+    ["Теодора Мънева", "BuildingBox", "0877 734 412"],
+    ["Катя Найденова", "Arco Real Estate Иван Вазов", "0876 728 425"],
+    ["Вилиян Лазаринов", "Estate Factory", "0876 060 607"],
+    ["Панайот Панайотов", "Next RE", "0888 940 002"],
+    ["Васил Сугарев", "Next RE", "0888 940 155"],
+    ["Моника Топалова", "Leartista", "0896 805 810"],
+    ["Стоян Димитров", "Матена Естейт", "0879 595 120"]
+
+  ];
+
+
+  // --------------------------------------------------
+  // DATA
+  // --------------------------------------------------
+
+  let data = JSON.parse(
+    localStorage.getItem(STORAGE_KEY)
+  ) || {
     startDate: new Date().toISOString().split("T")[0],
     days: [],
     prospects: [],
@@ -504,36 +567,92 @@
   };
 
 
-  // -----------------------------
-  // INITIALIZATION
-  // -----------------------------
+  // --------------------------------------------------
+  // ADD INITIAL PROSPECTS WITHOUT DUPLICATES
+  // --------------------------------------------------
 
-  document.getElementById("startDate").textContent = data.startDate;
+  function seedProspects() {
+
+    let added = false;
+
+    initialProspects.forEach(([name, company, phone]) => {
+
+      const exists = data.prospects.some(
+        p => p.contact === phone ||
+             p.company === `${name} — ${company}`
+      );
+
+      if (!exists) {
+
+        data.prospects.push({
+          id: Date.now() + Math.random(),
+          company: `${name} — ${company}`,
+          property: "",
+          contact: phone,
+          status: "New",
+          potential: 69,
+          notes: "",
+          testimonial: "No"
+        });
+
+        added = true;
+      }
+
+    });
+
+    if (added) {
+      save();
+    }
+  }
+
+
+  // --------------------------------------------------
+  // INITIALIZATION
+  // --------------------------------------------------
+
+  document.getElementById("startDate").textContent =
+    data.startDate;
+
+  seedProspects();
 
   loadLearning();
   renderProspects();
   updateDashboard();
 
 
-  // -----------------------------
+  // --------------------------------------------------
   // DAILY ACTIVITY
-  // -----------------------------
+  // --------------------------------------------------
 
   function saveToday() {
 
-    const today = new Date().toISOString().split("T")[0];
+    const today =
+      new Date().toISOString().split("T")[0];
 
     const entry = {
       date: today,
-      prospects: Number(document.getElementById("dailyProspects").value),
-      messages: Number(document.getElementById("dailyMessages").value),
-      calls: Number(document.getElementById("dailyCalls").value),
-      meetings: Number(document.getElementById("dailyMeetings").value),
-      sales: Number(document.getElementById("dailySales").value),
-      revenue: Number(document.getElementById("dailyRevenue").value)
+      prospects: Number(
+        document.getElementById("dailyProspects").value
+      ),
+      messages: Number(
+        document.getElementById("dailyMessages").value
+      ),
+      calls: Number(
+        document.getElementById("dailyCalls").value
+      ),
+      meetings: Number(
+        document.getElementById("dailyMeetings").value
+      ),
+      sales: Number(
+        document.getElementById("dailySales").value
+      ),
+      revenue: Number(
+        document.getElementById("dailyRevenue").value
+      )
     };
 
-    const existing = data.days.findIndex(d => d.date === today);
+    const existing =
+      data.days.findIndex(d => d.date === today);
 
     if (existing >= 0) {
       data.days[existing] = entry;
@@ -548,30 +667,72 @@
   }
 
 
-  // -----------------------------
-  // DASHBOARD CALCULATIONS
-  // -----------------------------
+  // --------------------------------------------------
+  // DASHBOARD
+  // --------------------------------------------------
 
   function updateDashboard() {
 
-    const revenue = data.days.reduce((sum, d) => sum + d.revenue, 0);
-    const prospects = data.days.reduce((sum, d) => sum + d.prospects, 0);
-    const customers = data.days.reduce((sum, d) => sum + d.sales, 0);
+    const revenue =
+      data.days.reduce(
+        (sum, d) => sum + d.revenue,
+        0
+      );
 
-    const testimonials = data.prospects.filter(
-      p => p.testimonial === "Yes"
-    ).length;
+    const prospects =
+      data.days.reduce(
+        (sum, d) => sum + d.prospects,
+        0
+      );
 
-    document.getElementById("revenue").textContent = revenue.toFixed(0);
-    document.getElementById("customers").textContent = customers;
-    document.getElementById("prospects").textContent = prospects;
-    document.getElementById("testimonials").textContent = testimonials;
+    const customers =
+      data.days.reduce(
+        (sum, d) => sum + d.sales,
+        0
+      );
+
+    const testimonials =
+      data.prospects.filter(
+        p => p.testimonial === "Yes"
+      ).length;
 
 
-    setProgress("revenueProgress", revenue, 500);
-    setProgress("customerProgress", customers, 5);
-    setProgress("prospectProgress", prospects, 140);
-    setProgress("testimonialProgress", testimonials, 3);
+    document.getElementById("revenue").textContent =
+      revenue.toFixed(0);
+
+    document.getElementById("customers").textContent =
+      customers;
+
+    document.getElementById("prospects").textContent =
+      prospects;
+
+    document.getElementById("testimonials").textContent =
+      testimonials;
+
+
+    setProgress(
+      "revenueProgress",
+      revenue,
+      500
+    );
+
+    setProgress(
+      "customerProgress",
+      customers,
+      5
+    );
+
+    setProgress(
+      "prospectProgress",
+      prospects,
+      140
+    );
+
+    setProgress(
+      "testimonialProgress",
+      testimonials,
+      3
+    );
 
 
     document.getElementById("goalRevenue").textContent =
@@ -589,19 +750,24 @@
 
 
   function percentage(value, target) {
-    return Math.min(100, Math.round((value / target) * 100));
+
+    return Math.min(
+      100,
+      Math.round((value / target) * 100)
+    );
   }
 
 
   function setProgress(id, value, target) {
+
     document.getElementById(id).style.width =
       percentage(value, target) + "%";
   }
 
 
-  // -----------------------------
+  // --------------------------------------------------
   // PROSPECT PIPELINE
-  // -----------------------------
+  // --------------------------------------------------
 
   function addProspect() {
 
@@ -623,9 +789,16 @@
   }
 
 
-  function updateProspect(id, field, value) {
+  function updateProspect(
+    id,
+    field,
+    value
+  ) {
 
-    const prospect = data.prospects.find(p => p.id === id);
+    const prospect =
+      data.prospects.find(
+        p => p.id === id
+      );
 
     if (!prospect) return;
 
@@ -639,7 +812,9 @@
   function deleteProspect(id) {
 
     data.prospects =
-      data.prospects.filter(p => p.id !== id);
+      data.prospects.filter(
+        p => p.id !== id
+      );
 
     save();
     renderProspects();
@@ -649,13 +824,17 @@
 
   function renderProspects() {
 
-    const table = document.getElementById("prospectTable");
+    const table =
+      document.getElementById(
+        "prospectTable"
+      );
 
     table.innerHTML = "";
 
     data.prospects.forEach(p => {
 
-      const row = document.createElement("tr");
+      const row =
+        document.createElement("tr");
 
       row.innerHTML = `
 
@@ -663,7 +842,11 @@
           <input
             value="${escapeHTML(p.company)}"
             placeholder="Agency / agent"
-            onchange="updateProspect(${p.id}, 'company', this.value)"
+            onchange="updateProspect(
+              ${p.id},
+              'company',
+              this.value
+            )"
           >
         </td>
 
@@ -671,7 +854,11 @@
           <input
             value="${escapeHTML(p.property)}"
             placeholder="Property"
-            onchange="updateProspect(${p.id}, 'property', this.value)"
+            onchange="updateProspect(
+              ${p.id},
+              'property',
+              this.value
+            )"
           >
         </td>
 
@@ -679,12 +866,22 @@
           <input
             value="${escapeHTML(p.contact)}"
             placeholder="Phone / email"
-            onchange="updateProspect(${p.id}, 'contact', this.value)"
+            onchange="updateProspect(
+              ${p.id},
+              'contact',
+              this.value
+            )"
           >
         </td>
 
         <td>
-          <select onchange="updateProspect(${p.id}, 'status', this.value)">
+          <select
+            onchange="updateProspect(
+              ${p.id},
+              'status',
+              this.value
+            )"
+          >
             ${statusOption("New", p.status)}
             ${statusOption("Contacted", p.status)}
             ${statusOption("Replied", p.status)}
@@ -698,7 +895,11 @@
           <input
             type="number"
             value="${p.potential}"
-            onchange="updateProspect(${p.id}, 'potential', Number(this.value))"
+            onchange="updateProspect(
+              ${p.id},
+              'potential',
+              Number(this.value)
+            )"
           >
         </td>
 
@@ -706,16 +907,23 @@
           <input
             value="${escapeHTML(p.notes)}"
             placeholder="Notes"
-            onchange="updateProspect(${p.id}, 'notes', this.value)"
+            onchange="updateProspect(
+              ${p.id},
+              'notes',
+              this.value
+            )"
           >
         </td>
 
         <td>
-          <button class="secondary"
-            onclick="deleteProspect(${p.id})">
+          <button
+            class="secondary"
+            onclick="deleteProspect(${p.id})"
+          >
             ×
           </button>
         </td>
+
       `;
 
       table.appendChild(row);
@@ -723,30 +931,42 @@
   }
 
 
-  function statusOption(value, current) {
+  function statusOption(
+    value,
+    current
+  ) {
+
     return `
-      <option value="${value}"
-        ${value === current ? "selected" : ""}>
+      <option
+        value="${value}"
+        ${value === current ? "selected" : ""}
+      >
         ${value}
       </option>
     `;
   }
 
 
-  // -----------------------------
+  // --------------------------------------------------
   // LEARNING NOTES
-  // -----------------------------
+  // --------------------------------------------------
 
   function saveLearning() {
 
     data.learning.buying =
-      document.getElementById("learningBuying").value;
+      document.getElementById(
+        "learningBuying"
+      ).value;
 
     data.learning.objections =
-      document.getElementById("learningObjections").value;
+      document.getElementById(
+        "learningObjections"
+      ).value;
 
     data.learning.changes =
-      document.getElementById("learningChanges").value;
+      document.getElementById(
+        "learningChanges"
+      ).value;
 
     save();
 
@@ -756,22 +976,29 @@
 
   function loadLearning() {
 
-    document.getElementById("learningBuying").value =
+    document.getElementById(
+      "learningBuying"
+    ).value =
       data.learning.buying || "";
 
-    document.getElementById("learningObjections").value =
+    document.getElementById(
+      "learningObjections"
+    ).value =
       data.learning.objections || "";
 
-    document.getElementById("learningChanges").value =
+    document.getElementById(
+      "learningChanges"
+    ).value =
       data.learning.changes || "";
   }
 
 
-  // -----------------------------
+  // --------------------------------------------------
   // STORAGE
-  // -----------------------------
+  // --------------------------------------------------
 
   function save() {
+
     localStorage.setItem(
       STORAGE_KEY,
       JSON.stringify(data)
@@ -779,23 +1006,35 @@
   }
 
 
-  // -----------------------------
+  // --------------------------------------------------
   // EXPORT
-  // -----------------------------
+  // --------------------------------------------------
 
   function exportData() {
 
     const blob = new Blob(
-      [JSON.stringify(data, null, 2)],
-      { type: "application/json" }
+      [
+        JSON.stringify(
+          data,
+          null,
+          2
+        )
+      ],
+      {
+        type: "application/json"
+      }
     );
 
-    const url = URL.createObjectURL(blob);
+    const url =
+      URL.createObjectURL(blob);
 
-    const a = document.createElement("a");
+    const a =
+      document.createElement("a");
 
     a.href = url;
-    a.download = "360-business-sprint.json";
+
+    a.download =
+      "360-business-sprint.json";
 
     a.click();
 
@@ -803,9 +1042,9 @@
   }
 
 
-  // -----------------------------
+  // --------------------------------------------------
   // RESET
-  // -----------------------------
+  // --------------------------------------------------
 
   function resetData() {
 
@@ -816,24 +1055,41 @@
 
     if (!confirmed) return;
 
-    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(
+      STORAGE_KEY
+    );
 
     location.reload();
   }
 
 
-  // -----------------------------
-  // SECURITY / HTML ESCAPING
-  // -----------------------------
+  // --------------------------------------------------
+  // SECURITY
+  // --------------------------------------------------
 
   function escapeHTML(value) {
 
     return String(value || "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
+      .replace(
+        /&/g,
+        "&amp;"
+      )
+      .replace(
+        /</g,
+        "&lt;"
+      )
+      .replace(
+        />/g,
+        "&gt;"
+      )
+      .replace(
+        /"/g,
+        "&quot;"
+      )
+      .replace(
+        /'/g,
+        "&#039;"
+      );
   }
 
 </script>
